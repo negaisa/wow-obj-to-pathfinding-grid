@@ -1,0 +1,11 @@
+[package]
+name = "wow-obj-to-pathfinding-grid"
+version = "0.1.0"
+authors = ["vagola <vladislavs.golubs@yandex.ru>"]
+edition = "2018"
+
+[dependencies]
+obj-to-athfinding-grid = { git = "https://github.com/negaisa/obj-to-pathfinding-grid" }
+structopt = "0.3"
+nalgebra = "0.21.0"
+obj = "0.10.0"
