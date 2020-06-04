@@ -41,15 +41,16 @@ fn main() {
             .to_owned()
             .expect("Failed to get file name");
 
-        let map_output_name = &input_name[0..7];
+        let map_id = &input_name[4..7];
+        let map_output_name = format!("map_{}", map_id);
 
-        let z = input_name[7..9]
+        let y = input_name[7..9]
             .parse::<u32>()
-            .expect("Failed to parse tile x from file name");
+            .expect("Failed to parse tile y from file name");
 
         let x = input_name[9..11]
             .parse::<u32>()
-            .expect("Failed to parse tile z from file name");
+            .expect("Failed to parse tile x from file name");
 
         let map_output_path = output.join(map_output_name);
 
@@ -57,14 +58,23 @@ fn main() {
             create_dir_all(&map_output_path).expect("Failed to create output folder");
         }
 
-        let output_name = format!("{}_{}.{}", x, z, "dat");
-        let output_path = map_output_path.join(output_name);
+        let output_name = format!("tile_{}_{}.{}", x, y, "dat");
+        let output_path = map_output_path.join(&output_name);
 
         let obj = Obj::load(input_path).expect("Failed to load obj file");
-        let center = Vector3::new(0.0, 0.0, 0.0);
+
+        let center_x = tile_to_axis(x) - 533.3 * 0.5;
+        let center_y = tile_to_axis(y) - 533.3 * 0.5;
+
+        let center = Vector3::new(center_x, center_y, 0.0);
 
         let progress = StdOutProgress::new();
-        let preprocessor = WowPreprocessor::new(x, z);
+        let preprocessor = WowPreprocessor::new(x, y);
+
+        println!(
+            "Converting obj file {} to grid {} with center x: {}, y: {}",
+            input_name, &output_name, x, y, center_x, center_y
+        );
 
         convert(&obj, center, 1.0, 533, 500, progress, preprocessor)
             .export(output_path)
@@ -121,10 +131,50 @@ impl Preprocessor for WowPreprocessor {
             return None;
         }
 
-        Some(triangle)
+        Some(swap_triangle_y_z(triangle))
     }
+}
+
+// Y is height in our data.
+fn swap_triangle_y_z(triangle: Triangle) -> Triangle {
+    let a = swap_vector_y_z(triangle.a);
+    let b = swap_vector_y_z(triangle.b);
+    let c = swap_vector_y_z(triangle.c);
+
+    Triangle::new(a, b, c)
+}
+
+fn swap_vector_y_z(vector: Vector3<f32>) -> Vector3<f32> {
+    Vector3::new(vector.x, vector.z, vector.y)
 }
 
 fn axis_to_tile(axis: f32) -> u32 {
     (32.0 - (axis / 533.33)).floor() as u32
+}
+
+fn tile_to_axis(tile: u32) -> f32 {
+    (32.0 - tile as f32) * 533.3
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::{axis_to_tile, tile_to_axis};
+
+    #[test]
+    fn test_axis_to_tile() {
+        let tile_x = axis_to_tile(375.0);
+        let tile_z = axis_to_tile(-13904.166016);
+
+        assert_eq!(tile_x, 31);
+        assert_eq!(tile_z, 58);
+    }
+
+    #[test]
+    fn test_tile_to_axis() {
+        let x = tile_to_axis(31);
+        let z = tile_to_axis(58);
+
+        assert_eq!(x, 533.3);
+        assert_eq!(z, -13865.8);
+    }
 }
