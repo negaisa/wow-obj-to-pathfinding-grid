@@ -12,5 +12,5 @@ Grid generator for World of Warcraft
 ## Example
 
 ```
-cargo run -- --input-folder=tests
+cargo run --release -- --input-folder=tests
 ```

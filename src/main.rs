@@ -1,7 +1,7 @@
 use nalgebra::Vector3;
 use obj::Obj;
 use obj_to_pathfinding_grid::geometry::Triangle;
-use obj_to_pathfinding_grid::{convert, Preprocessor, Progress};
+use obj_to_pathfinding_grid::{convert, parse_triangles, Preprocessor, Progress};
 use std::fs;
 use std::fs::create_dir_all;
 use std::path::PathBuf;
@@ -41,7 +41,7 @@ fn main() {
             .to_owned()
             .expect("Failed to get file name");
 
-        let map_id = &input_name[4..7];
+        let map_id = &input_name[3..7];
         let map_output_name = format!("map_{}", map_id);
 
         let y = input_name[7..9]
@@ -73,10 +73,12 @@ fn main() {
 
         println!(
             "Converting obj file {} to grid {} with center x: {}, y: {}",
-            input_name, &output_name, x, y, center_x, center_y
+            input_name, &output_name, center_x, center_y
         );
 
-        convert(&obj, center, 1.0, 533, 500, progress, preprocessor)
+        let triangles: Vec<Triangle> = parse_triangles(&obj).into_iter().collect();
+
+        convert(triangles, center, 534, 1000, progress, preprocessor)
             .export(output_path)
             .expect("Failed to save output file");
     }
