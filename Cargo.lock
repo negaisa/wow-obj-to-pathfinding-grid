@@ -77,7 +77,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 [[package]]
 name = "flying-pathfinding"
 version = "0.1.0"
-source = "git+https://github.com/negaisa/flying-pathfinding#8331370ae50becb9cd31322b176ea3dcdae0a02d"
+source = "git+https://github.com/negaisa/flying-pathfinding#effbee5650f075f3875f202c2d8378d276553ee5"
 dependencies = [
  "bitvec 0.17.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "byteorder 1.3.4 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -202,7 +202,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 [[package]]
 name = "obj-to-pathfinding-grid"
 version = "0.1.0"
-source = "git+https://github.com/negaisa/obj-to-pathfinding-grid#a39d648be51a88b5fbd8725b90144344d250f396"
+source = "git+https://github.com/negaisa/obj-to-pathfinding-grid#d1617830744b83addec140c1ab51ac1ba82d12b2"
 dependencies = [
  "flying-pathfinding 0.1.0 (git+https://github.com/negaisa/flying-pathfinding)",
  "nalgebra 0.21.0 (registry+https://github.com/rust-lang/crates.io-index)",
